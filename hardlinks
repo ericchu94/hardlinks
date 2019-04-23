@@ -1,0 +1,22 @@
+#!/bin/bash
+
+config=${1:-~ericchu/pg/hardlinks/hardlinks.txt}
+
+while read -r src regex
+do
+	for file in $(find $src)
+	do
+		dst=$(echo $file | sed -E "$regex")
+		dir=$(dirname "$dst")
+		if [ ! -d "$dir" ]
+		then
+			echo mkdir -p "$dir"
+			mkdir -p "$dir"
+		fi
+		if [ ! -f "$dst" ]
+		then
+			echo cp -rl "$file" "$dst"
+			cp -rl "$file" "$dst"
+		fi
+	done
+done < $config
